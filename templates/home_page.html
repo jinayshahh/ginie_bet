@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sport Selection</title>
+    <style>
+        h1 {
+            color: blue;
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        /* Amazing CSS for the link */
+        .funds-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .amazing-link:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sport Selection</h1>
+    <form action="/total_matches" method="POST">
+        <select name="selection">
+            {% if sport_options %}
+                {% for sport in sport_options %}
+                    <option value="{{ sport[0] }}">{{ sport[1] }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="">blank</option>
+            {% endif %}
+        </select>
+        <input type="submit" value="Select">
+    </form>
+
+    <!-- Amazing CSS link below the form -->
+    <a href="/funds" class="funds-link">Funds</a>
+</body>
+</html>

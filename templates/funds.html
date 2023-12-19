@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Funds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field {
+            margin: 10px 0;
+        }
+
+        .input-field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-field input {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .input-field input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-field input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .view-link {
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .view-link:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Funds</h1>
+    <div class="container">
+        <form action="/fund_manager" method="POST">
+        <div class="input-field">
+            <label for="addFunds">Add Funds:</label>
+            <input type="number" id="addFunds" name="addFunds" placeholder="Enter amount">
+            <input type="submit" value="Add" name="add">
+        </div>
+
+        <div class="input-field">
+            <label for="withdrawFunds">Withdraw Funds:</label>
+            <input type="number" id="withdrawFunds" name="withdrawFunds" placeholder="Enter amount">
+            <input type="submit" value="Withdraw">
+        </div>
+        </form>
+        <a href="/view_balance" class="view-link">View Current Balance</a>
+    </div>
+</body>
+</html>

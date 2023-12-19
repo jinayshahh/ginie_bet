@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question p {
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .answer-input {
+            margin-top: 10px;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<form id="quizForm" action="/quiz_conti/{{ match[1] }}" method="post">
+        <div class="question">
+            <p>{{ question }}</p>
+            <div class="options">
+                {% for option in options %}
+                {% if option != "None" %}
+                <label for="{{ loop.index }}"><input type="radio" name="answer" id="{{ loop.index }}" value="{{ option }}"> {{ option }}</label>
+                {% endif %}
+                {% endfor %}
+                <label for="pass_option"><input type="radio" name="answer" id="pass_option" value="Pass"> Pass</label>
+            </div>
+        </div>
+        <!-- Add more questions here -->
+        <div class="submit-button">
+            <button type="submit">Submit Answers</button>
+        </div>
+    </form>
+</body>
+</html>

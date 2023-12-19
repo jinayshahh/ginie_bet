@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        /* styles.css */
+.custom-link {
+    text-decoration: none;
+    color: #007bff; /* Link color */
+    font-weight: bold;
+    border: 2px solid #007bff; /* Link border */
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    background-color: #fff; /* Background color */
+    transition: all 0.3s; /* Smooth hover effect */
+}
+
+.custom-link:hover {
+    background-color: #007bff; /* Background color on hover */
+    color: #fff; /* Link color on hover */
+}
+
+    </style>
+</head>
+<body>
+    <h1>Welcome to Ginie Bet!</h1>
+    <h2>The rules are as follows:</h2>
+    <ul>
+        {% for rule in rules %}
+        <li>{{ rule }}</li>
+        {% endfor %}
+    </ul>
+<!--    <form method="POST" action="/game_on/{{ match[1] }}">-->
+<!--        <p>do you agree?</p>-->
+<!--        <label for="response">Enter 'yes' or 'no':</label>-->
+<!--        <input type="text" id="response" name="response" required>-->
+<!--        <input type="submit" value="Submit">-->
+<!--    </form>-->
+<a class="custom-link" href="/ginie_bet_question_list/{{ match[1] }}">list of questions</a>
+
+</body>
+</html>

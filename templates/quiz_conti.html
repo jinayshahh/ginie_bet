@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question p {
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .answer-input {
+            margin-top: 10px;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<form id="quizForm" action="/game_on_yes" method="post">
+        <div class="question">
+            <p>do you want to continue?</p>
+            <div class="options">
+                <label for="yes"><input type="radio" name="yes" id="yes" value="yes"> yes</label>
+                <label for="no"><input type="radio" name="no" id="no" value="no"> no</label>
+            </div>
+        </div>
+        <div class="submit-button">
+            <button type="submit">Submit Answers</button>
+        </div>
+    </form>
+</body>
+</html>

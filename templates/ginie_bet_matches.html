@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sport Selection</title>
+    <style>
+        body {
+            background-color: #f1f1f1;
+            font-family: Arial, sans-serif;
+        }
+
+   h4 {
+        text-align: center;
+        color: #333;
+        margin-top: 30px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    a {
+        margin-bottom: 10px;
+        background-color: #fff;
+        padding: 10px;
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+<h4>{{ selected_sport }} Matches</h4>
+    {% if matches %}
+        <ul>
+        {% for match in matches %}
+        <a href="/ginie_bet/{{ match }}">{{ match }}</a>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No upcoming matches found.</p>
+    {% endif %}
+</body>
+</html>

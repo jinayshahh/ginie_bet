@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GinieBet Enable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>GinieBet Enable</h1>
+    <h1>{{ sport_name }} Matches</h1>
+    {% if matches %}
+        <form method="POST" action="/process_enable">
+            <p>Number of Matches: {{ matches|length }}</p>  <!-- Display the number of matches -->
+            <input type="hidden" name="length_match" value="{{ matches|length }}">
+            <ul>
+            {% for match in matches %}
+                <li>{{ match.event_home_team }} vs {{ match.event_away_team }} - {{ match.event_date }}</li>
+                <label for="selection_{{ loop.index }}">Enter 'Y' to enable GinieBet or 'N' to disable:</label>
+                <input type="text" id="selection_{{ loop.index }}" name="selection_{{ loop.index }}">
+                <label for="selection_{{ loop.index }}">how much should the entry fees be:</label>
+                <input type="text" id="entry_fee" name="entry_fee">
+                <label for="selection_{{ loop.index }}">which type of multiplier:</label>
+                <input type="text" id="multiplier" name="multiplier">
+                <br>
+                <br>
+            <input type="submit" value="Submit">
+            {% endfor %}
+            </ul>
+        </form>
+    {% else %}
+        <p>No upcoming matches found.</p>
+    {% endif %}
+<a href="/ginie_bet_matches">sports selection</a>
+</body>
+</html>
+
