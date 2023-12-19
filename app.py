@@ -726,11 +726,9 @@ def authentication_admin():
                 if action == 'add':
                     user_ledger_addentry = f'{payment_type} A/C\nTo {game_name} A/C'
                     admin_ledger_given = f'{user_name} A/C\nTo {payment_type} A/C'
-
                 else:
                     user_ledger_deductentry = f'{game_name} A/C\nTo {payment_type} A/C'
                     admin_ledger_received = f'{payment_type} A/C\nTo {user_name} A/C'
-
                 if action == 'add':
                     try:
                         mycur.execute(f"INSERT INTO records_user (id, reason_change, old_record_user, new_record_user, "
@@ -790,7 +788,6 @@ def authentication_admin():
                             f'VALUES ("{num_records_admin}", "{admin_pool}", "{amount}",'
                             f' "{admin_ledger_received}", "{reason}", "{amount}", "{formatted_datetime}")')
                         conn.commit()
-
                 if action == 'add':
                     mycur.execute(
                         f"UPDATE user_data SET "
@@ -811,7 +808,11 @@ def authentication_admin():
                 mycur.execute('SELECT * FROM records_user WHERE user_name = %s', (user_name,))
                 users_record = mycur.fetchall()
                 conn.commit()
-                return render_template("change_details.html", user=user, payment_type=payment_type, reason=reason,
+                mycur.execute("SELECT * FROM ginie_bet.user_data WHERE user_name = %s", (user_name,))
+                users_details = mycur.fetchall()
+                conn.commit()
+                users_detail = users_details[0]
+                return render_template("change_details.html", user=users_detail, payment_type=payment_type, reason=reason,
                                        num_records=num_records, amount=amount, new_balance=new_balance,
                                        users_record=users_record, admin_ledger=admin_ledger_current)
             else:
