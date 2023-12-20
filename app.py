@@ -83,13 +83,14 @@ sport_number = sport_number()
 mycur.execute("SELECT user_id from user_data where status='BLOCK'")
 blocked_users_list = mycur.fetchall()
 conn.commit()
-
+print(blocked_users)
 # can_play = True
 # can_withdraw = True
 
 if blocked_users_list:
     for blocked_user in blocked_users_list:
         blocked_users.add(blocked_user[0])  # Extract the value from the tuple
+        print(blocked_user)
 
 
 def admin_record_pool():
@@ -2153,19 +2154,23 @@ def total_results(match_name_result):
 @app.route('/total_users', methods=['GET', 'POST'])
 def total_users():
     # Fetch all user data from the database
-    users_data = users
+    mycur.execute("select * from user_data")
+    users_data = mycur.fetchall()
+    conn.commit()
+    for user in users:
+        print(user[15])
     user_num = len(users_data)
     random_number = random.randint(1, 30)
     # Pass the user data to the template for rendering
-    return render_template('view_users.html', users=users_data, user_num=user_num, random_number=random_number,
-                           blocked_users=blocked_users)
-
+    return render_template('view_users.html', users=users_data, user_num=user_num, random_number=random_number)
 
 @app.route('/user_details/<userid>', methods=['GET', 'POST'])
 def user_details(userid):
     # Find the user with the provided username
     user = None
-    users_data = users
+    mycur.execute("select * from user_data")
+    users_data = mycur.fetchall()
+    conn.commit()
     session['userid'] = userid
     # mycur.execute(f"select * from records_user where user_name = '{user_name}'")
     # conn.commit()
@@ -2182,8 +2187,7 @@ def user_details(userid):
         mycur.execute(f"SELECT * FROM ginie_bet.finances_records where user_name = '{user_name}'")
         matches_user = mycur.fetchall()
         conn.commit()
-        return render_template("user_details.html", user=user, records=records,
-                               blocked_users=blocked_users, matches_user=matches_user)
+        return render_template("user_details.html", user=user, records=records, matches_user=matches_user)
     else:
         return "user not found"
 
@@ -2243,17 +2247,19 @@ def overview_user():
 @app.route('/block_user/<int:user_id>', methods=['POST'])
 def block_user(user_id):
     global blocked_users
+    print(user_id)
+    mycur.execute(f"UPDATE user_data SET status='BLOCK' WHERE user_id = '{user_id}'")
+    conn.commit()
+    return jsonify({'message': 'User blocked', 'status': 'blocked'})
 
-    if user_id in blocked_users:
-        blocked_users.remove(user_id)
-        mycur.execute(f"UPDATE user_data SET status='UNBLOCK' WHERE user_id = '{user_id}'")
-        conn.commit()
-        return jsonify({'message': 'User unblocked', 'status': 'unblocked'})
-    else:
-        # blocked_users.add(user_id)
-        mycur.execute(f"UPDATE user_data SET status='BLOCK' WHERE user_id = '{user_id}'")
-        conn.commit()
-        return jsonify({'message': 'User blocked', 'status': 'blocked'})
+
+@app.route('/unblock_user/<int:user_id>', methods=['POST'])
+def unblock_user(user_id):
+    global blocked_users
+    print(user_id)
+    mycur.execute(f"UPDATE user_data SET status='UNBLOCK' WHERE user_id = '{user_id}'")
+    conn.commit()
+    return jsonify({'message': 'User blocked', 'status': 'blocked'})
 
 
 @app.route('/get_users')

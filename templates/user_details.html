@@ -6338,19 +6338,14 @@ License: For each use you must have a valid license purchased only from above li
 														<!--end::User-->
 														<!--begin::Actions-->
 														<div class="d-flex my-4">
-															<button class="btn btn-light-danger fw-bold px-4
-																	py-3 block-btn" data-user-id="{{ user[0] }}">
-																	{% if user[0] in blocked_users %} Unblock {% else %}
-																	Block {% endif %}
-															</button>
+															{% if user[15] != "BLOCK" %}
+																<button class="btn btn-light-danger fw-bold px-4
+																py-3 block-btn" data-user-id="{{ user[0] }}">BLOCK</button>
+															{% else %}
+																<button class="btn btn-light-success fw-bold px-4
+																py-3 unblock-btn" data-user-id="{{ user[0] }}">UNBLOCK</button>
+															{% endif %}
 <!--															<a href="#" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_offer_a_deal">Hire Me</a>-->
-															<!--begin::Menu-->
-															<div class="me-0">
-																<button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-																	<i class="bi bi-three-dots fs-3"></i>
-																</button>
-															</div>
-															<!--end::Menu-->
 														</div>
 														<!--end::Actions-->
 													</div>
@@ -11849,14 +11844,27 @@ saveProfileBtn.addEventListener("click", function () {
         blockButton.addEventListener('click', function() {
             isBlocked = !isBlocked;
 
-            if (isBlocked) {
-                blockButton.textContent = 'Block';
-            } else {
-                blockButton.textContent = 'Unblock';
-            }
-
             $.post(`/block_user/${userId}`, function(response) {
                 console.log(response);
+                location.reload();
+            });
+        });
+    });
+});
+</script>
+		<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const blockButtons = document.querySelectorAll('.unblock-btn');
+    blockButtons.forEach(function(blockButton) {
+        let isBlocked = true;
+        const userId = blockButton.getAttribute('data-user-id');
+
+        blockButton.addEventListener('click', function() {
+            isBlocked = !isBlocked;
+
+            $.post(`/unblock_user/${userId}`, function(response) {
+                console.log(response);
+                location.reload();
             });
         });
     });
