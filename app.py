@@ -6,6 +6,7 @@
 #
 #
 from flask import Flask, request, redirect, session, render_template, jsonify, url_for
+import requests
 # from twilio.rest import Client
 from user_authentication import generate_otp, check_existing_user
 # from sport_selection import get_upcoming_matches
@@ -53,7 +54,7 @@ blocked_users = set()  # Initialize an empty set
 # TWILIO_SID = 'AC3d75f35ec0aa2369c303eb51a2bf35dc'
 # TWILIO_AUTH_TOKEN = 'eb55ccc2ddb751e0c65f04931bc3ca67'
 # TWILIO_PHONE_NUMBER = '+14175453286'
-
+api_key_google_maps = 'AIzaSyBt6PwymNiwmj7hTXaypG1-aGTAa8I9N8E'  # Replace with your Google Maps API key
 
 conn = mysql.connector.connect(
     user="root",
@@ -140,6 +141,32 @@ def get_match_by_dif(match_dif):
 
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+
+
+# Function to get location name from coordinates using Google Maps Geocoding API
+def get_location_name(lat, lng):
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&key={api_key_google_maps}'
+    response = requests.get(url)
+    location_data = response.json()
+    if location_data['status'] == 'OK':
+        return location_data['results'][0]['formatted_address']
+    else:
+        return 'Location name not found'
+
+# Function to get location from IP address using Google Maps Geolocation API
+def get_location(ip):
+    url = f'https://www.googleapis.com/geolocation/v1/geolocate?key={api_key_google_maps}'
+    payload = {"considerIp": "true", "wifiAccessPoints": []}  # Consider IP for geolocation
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, json=payload, headers=headers)
+    location_data = response.json()
+    if 'location' in location_data:
+        lat = location_data['location']['lat']
+        lng = location_data['location']['lng']
+        location_name = get_location_name(lat, lng)  # Get location name from coordinates
+        return location_name
+    else:
+        return 'Location not found'
 
 
 def allowed_file(filename):
@@ -1571,6 +1598,9 @@ def conti_game(match_dif):
 
 
 def adding_answer_sql():
+    user_ip = request.remote_addr  # Get the user's IP address
+    user_location = get_location(
+        user_ip)
     user = session.get('user')
     match_name_adding_answer = session.get('current_match')
     mycur.execute("SELECT id_check_answer FROM check_answer_ginie_bet ORDER BY id_check_answer DESC LIMIT 1")
@@ -1586,8 +1616,8 @@ def adding_answer_sql():
     print(answers_filtered)
     # Now you can safely join the list into a string
     answers_str = ', '.join(answers_filtered)
-    mycur.execute(f'INSERT INTO check_answer_ginie_bet (id_check_answer, match_name, user_name, answers)'
-                  f'VALUES ("{id_check_answer}", "{match_name_adding_answer[1]}", "{user}", "{answers_str}")')
+    mycur.execute(f'INSERT INTO check_answer_ginie_bet (id_check_answer, match_name, user_name, answers, user_ip_match, user_location_match)'
+                  f'VALUES ("{id_check_answer}", "{match_name_adding_answer[1]}", "{user}", "{answers_str}", "{user_ip}", "{user_location}")')
     conn.commit()
     # answer_number = 1
     # for answer in answers_filtered:
@@ -1798,9 +1828,33 @@ def roll_out_clicked_correct_answer():
                         f'INSERT INTO finances_records (id_finances_records, match_name, user_name, date_match, match_status,'
                         f' amount_won, loss, sports_name, balance, void_count) VALUES ("{id_finances_record}", '
                         f'"{match_roll_out_correct[0][0]}", "{username_check}", "{formatted_datetime}", "WON",'
-                        f' "{points}", "{points}", "{match_roll_out_correct[0][1]}", "{balance_past}", '
+                        f' "{points}", "{points}", "{match_roll_out_correct[0][1]}", "{balance_past + points}", '
                         f'"{void_count_quiz}")')
                     conn.commit()
+                    mycur.execute('select * from records_user')
+                    users_record = mycur.fetchall()
+                    conn.commit()
+                    record_ids = []
+                    for users_record in users_record:
+                        record_id = users_record[0]
+                        record_ids.append(record_id)
+                    num_records = (len(record_ids) + 1)
+                    try:
+                        mycur.execute(f"INSERT INTO records_user (id, reason_change, old_record_user, new_record_user, "
+                                      f"user_name, amount, payment_type, date, balance, action, user_ledger"
+                                      f") VALUES ('{num_records}', 'amount won', 'N/A', "
+                                      f"'N/A', '{username_check}', '{points}', 'N/A',"
+                                      f"'{formatted_datetime}','{balance_past + points}', 'N/A', 'Points A/C to {username_check} A/C')")
+                        # mycur.execute('DELETE from records_user')
+                        conn.commit()
+                    except:
+                        mycur.execute(f"INSERT INTO records_user (id, reason_change, old_record_user, new_record_user, "
+                                      f"user_name, amount, payment_type, date, balance, action, user_ledger"
+                                      f") VALUES ('{num_records + 1}', 'amount won', 'N/A', "
+                                      f"'N/A', '{username_check}', '{points}', 'N/A',"
+                                      f"'{formatted_datetime}','{balance_past + points}', 'N/A', 'Points A/C to {username_check} A/C')")
+                        # mycur.execute('DELETE from records_user')
+                        conn.commit()
                     mycur.execute(
                         f'UPDATE check_answer_ginie_bet SET won_match = "yes", void_count = "{void_count_quiz}"'
                         f' where user_name = "{username_check}" and match_name = "{match_roll_out_correct[0][0]}"')
@@ -1826,6 +1880,30 @@ def roll_out_clicked_correct_answer():
                     f' "{entry_fees_current}", "{entry_fees_current}","{match_roll_out_correct[0][1]}",'
                     f' "{balance_past}", "{void_count_quiz}")')
                 conn.commit()
+                mycur.execute('select * from records_user')
+                users_record = mycur.fetchall()
+                conn.commit()
+                record_ids = []
+                for users_record in users_record:
+                    record_id = users_record[0]
+                    record_ids.append(record_id)
+                num_records = (len(record_ids) + 1)
+                try:
+                    mycur.execute(f"INSERT INTO records_user (id, reason_change, old_record_user, new_record_user, "
+                                  f"user_name, amount, payment_type, date, balance, action, user_ledger"
+                                  f") VALUES ('{num_records}', 'amount Lost', 'N/A', "
+                                  f"'N/A', '{username_check}', '{points}', 'N/A',"
+                                  f"'{formatted_datetime}','{balance_past}', 'N/A', '{username_check} A/C to Points A/C')")
+                    # mycur.execute('DELETE from records_user')
+                    conn.commit()
+                except:
+                    mycur.execute(f"INSERT INTO records_user (id, reason_change, old_record_user, new_record_user, "
+                                  f"user_name, amount, payment_type, date, balance, action, user_ledger"
+                                  f") VALUES ('{num_records + 1}', 'amount won', 'N/A', "
+                                  f"'N/A', '{username_check}', '{points}', 'N/A',"
+                                  f"'{formatted_datetime}','{balance_past}', 'N/A', '{username_check} A/C to Points A/C')")
+                    # mycur.execute('DELETE from records_user')
+                    conn.commit()
             mycur.execute(
                 f'UPDATE check_answer_ginie_bet SET checked_user = "yes", void_count = "{void_count_quiz}"'
                 f' where user_name = "{username_check}" and match_name = "{match_roll_out_correct[0][0]}"')
@@ -2017,15 +2095,17 @@ def match_user_details(user_name):
 
     # Now 'combined_data' contains a list of tuples with combined values
 
-    user = None
-    users_data = users
-    for u in users_data:
-        if u[1] == user_name:
-            user = u
-            break
+    mycur.execute(f"select * from user_data where user_name = '{user_name}'")
+    user_details_match = mycur.fetchall()
+    conn.commit()
+    user = user_details_match[0]
 
+    mycur.execute(f"select * from check_answer_ginie_bet where user_name = '{user_name}'")
+    user_details_match_specific = mycur.fetchall()
+    conn.commit()
+    user_match = user_details_match_specific[0]
     return render_template("match_user_details.html", user=user, combined_data=combined_data,
-                           match_selected=match_selected_current)
+                           match_selected=match_selected_current, user_match=user_match)
 
 
 @app.route('/total_results/<match_name_result>', methods=['POST', 'GET'])
@@ -2289,6 +2369,9 @@ def store_data():
     global user_number
     name_user = request.form['name']
     phone_number = session.get('phone_number')
+    user_ip = request.remote_addr  # Get the user's IP address
+    user_location = get_location(
+        user_ip)  # Get location name based on IP address using Google Maps Geolocation and Geocoding APIs
     if phone_number.isdigit():  # Validate if it is a numeric string
         user_number = int(phone_number)
         # Rest of the code for inserting the data
@@ -2299,9 +2382,9 @@ def store_data():
     mycur.execute(
         f"INSERT INTO user_data (user_id, actual_name, user_name, user_number, register_time, last_login, balance, "
         f"fund_added, fund_withdrawn, total_profit, total_loss, num_matches_played, matches_lost, matches_won,"
-        f" bonus_points, status) "
+        f" bonus_points, status, location_user, user_ip) "
         f"VALUES ({number},'{name_user}','{name_user}({user_number})', {user_number}, '{formatted_datetime}', '{formatted_datetime}'"
-        f",'0','0','0','0','0','0','0','0','0','none');")
+        f",'0','0','0','0','0','0','0','0','0','none', '{user_location}', '{user_ip}');")
 
     conn.commit()
     return render_template('home_page.html', sport_options=sport_options)
@@ -2331,10 +2414,14 @@ def login():
                 otp = generate_otp()
                 print(otp)
                 # send_otp(phone_number, otp)
-
+                user_ip = request.remote_addr  # Get the user's IP address
+                user_location = get_location(
+                    user_ip)  # Get location name based on IP address using Google Maps Geolocation and Geocoding APIs
+                print(user_ip, user_location)
                 # Update the last_login field in the database
                 mycur.execute(
-                    f"UPDATE user_data SET last_login = '{formatted_datetime}' WHERE user_number = {phone_number};")
+                    f"UPDATE user_data SET last_login = '{formatted_datetime}', location_user = '{user_location}'"
+                    f", user_ip = '{user_ip}' WHERE user_number = {phone_number};")
                 conn.commit()
                 # Store phone number and OTP in session for validation
                 session['phone_number'] = phone_number

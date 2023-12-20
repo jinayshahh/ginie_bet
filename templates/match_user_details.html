@@ -6350,7 +6350,7 @@ License: For each use you must have a valid license purchased only from above li
 											</div>
 										</div>
 									</div>
-														<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+									<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
 															<!--begin::Col-->
 															<div class="col-xl-12">
 																<!--begin::Tables widget 14-->
@@ -6433,7 +6433,102 @@ License: For each use you must have a valid license purchased only from above li
 															</div>
 															<!--end::Col-->
 														</div>
-
+									<!--begin::details View-->
+									<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+										<!--begin::Card header-->
+										<div class="card-header cursor-pointer">
+											<!--begin::Card title-->
+											<div class="card-title m-0">
+												<h3 class="fw-bold m-0">match Details</h3>
+											</div>
+											<!--end::Card title-->
+											<!--begin::Action-->
+<!--											<a href="../../demo1/dist/account/settings.html" class="btn btn-primary align-self-center">Edit Profile</a>-->
+<!--											        test-->
+<!--													<div class="row">-->
+<!--														<div class="offset-lg-4 edit_link">-->
+<!--															<a href="/authentication_admin" >Edit</a>-->
+<!--														</div>-->
+<!--													</div>-->
+											<!--end::Action-->
+										</div>
+										<!--begin::Card header-->
+										<!--begin::Card body-->
+										<div class="card-body p-9">
+											<!--begin::Row-->
+											<div class="row mb-7">
+												<!--begin::Label-->
+												<label class="col-lg-4 fw-semibold text-muted">Match Name</label>
+												<!--end::Label-->
+												<!--begin::Col-->
+												<div class="col-lg-8">
+													<span class="fw-bold fs-6 text-gray-800">{{user_match[1]}}</span>
+												</div>
+												<!--end::Col-->
+											</div>
+											<!--end::Row-->
+											<!--begin::Input group-->
+											<div class="row mb-7">
+													<label class="col-lg-4 fw-semibold text-muted">User Name</label>
+													<div class="col-lg-8">
+														<span class="fw-bold fs-6 text-gray-800" id="user-name">{{ user_match[2] }}</span>
+														<input type="text" class="form-control d-none" id="user-name-input">
+													</div>
+												</div>
+												<!--end::Col-->
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="row mb-7">
+													<label class="col-lg-4 fw-semibold text-muted">Answers</label>
+													<div class="col-lg-8">
+														<span class="fw-bold fs-6 text-gray-800" id="answers">{{ user_match[3] }}</span>
+														<input type="text" class="form-control d-none" id="answers_input">
+													</div>
+												</div>
+												<!--end::Col-->
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="row mb-7">
+												<!--begin::Label-->
+												<label class="col-lg-4 fw-semibold text-muted">User IP Address
+												<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="this is for security purpose"></i></label>
+												<!--end::Label-->
+												<!--begin::Col-->
+												<div class="col-lg-8 d-flex align-items-center">
+													<span class="fw-bold fs-6 text-gray-800 me-2">{{user_match[23]}}</span>
+												</div>
+												<!--end::Col-->
+											</div>
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="row mb-7">
+												<!--begin::Label-->
+												<label class="col-lg-4 fw-semibold text-muted">User location
+												<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="this is for security purpose"></i></label>
+												<!--end::Label-->
+												<!--begin::Col-->
+												<div class="col-lg-8 d-flex align-items-center">
+													<span class="fw-bold fs-6 text-gray-800 me-2">{{user_match[24]}}</span>
+												</div>
+												<!--end::Col-->
+											</div>
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="row mb-7">
+												<!--begin::Label-->
+												<label class="col-lg-4 fw-semibold text-muted">Void Count</label>
+												<!--end::Label-->
+												<!--begin::Col-->
+												<div class="col-lg-8">
+													<a href="#" class="fw-semibold fs-6 text-gray-800 text-hover-primary">{{user_match[22]}}</a>
+												</div>
+												<!--end::Col-->
+											</div>
+											<!--end::Input group-->
+										</div>
+										<!--end::Card body-->
+									</div>
+									<!--end::details View-->
 									<!--end::Navbar-->
 								</div>
 								<!--end::Content container-->
