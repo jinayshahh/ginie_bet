@@ -6546,15 +6546,15 @@ License: For each use you must have a valid license purchased only from above li
 						{% if match[12] != 'yes' %}
 						<a href="/roll_out_clicked_questions" class="btn btn-sm fw-bold btn-primary margin_left_deleted_questions">roll out questions</a>
 						{% endif %}
-						{% if match[12] == 'yes' %}
-						<a href="/roll_out_clicked_correct_answer" class="btn btn-sm fw-bold btn-primary margin_left_deleted_questions">roll out the ginie bet</a>
-						{% endif %}
 						{% endif %}
 						{% if match[14] == "yes" %}
 						{% if match[15] != "yes" %}
 						<a href="/results_match/{{match[2]}}" class="btn btn-light-success fw-bold px-4 py-3">Check results</a>
 						{% endif %}
 						{% endif %}
+<!--						{% if match[12] == 'yes' %}-->
+<!--						<a href="/roll_out_clicked_correct_answer" class="btn btn-sm fw-bold btn-primary margin_left_deleted_questions">roll out the ginie bet</a>-->
+<!--						{% endif %}-->
 						{% endfor %}
 <!--						<button class="btn btn-light-success fw-bold px-4 py-3 block-btn">-->
 <!--							<a href="/all_sports">Input correct answers</a>-->

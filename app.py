@@ -20,7 +20,7 @@ import re
 import os
 import secrets
 import string
-
+from faker import Faker
 #
 #
 #
@@ -83,14 +83,6 @@ sport_number = sport_number()
 mycur.execute("SELECT user_id from user_data where status='BLOCK'")
 blocked_users_list = mycur.fetchall()
 conn.commit()
-print(blocked_users)
-# can_play = True
-# can_withdraw = True
-
-if blocked_users_list:
-    for blocked_user in blocked_users_list:
-        blocked_users.add(blocked_user[0])  # Extract the value from the tuple
-        print(blocked_user)
 
 
 def admin_record_pool():
@@ -974,7 +966,7 @@ def fund_manager():
                     else:
                         return "sorry but your amount includes bonus, please check again and try."
         else:
-            return "fail"
+            return "you are blocked"
 
 
 @app.route('/stats_funds', methods=['GET', 'POST'])
@@ -1135,6 +1127,12 @@ def match_details(match_id):
     mycur.execute(f'select * from questions_ginie_bet where match_name = "{match_name}" AND soft_delete != "yes"')
     ginie_bet_questions = mycur.fetchall()
     conn.commit()
+    mycur.execute(f'select correct_answer from questions_ginie_bet where match_name = "{match_name}" AND soft_delete != "yes"')
+    ginie_bet_correct_answer = mycur.fetchall()
+    conn.commit()
+    print(ginie_bet_correct_answer)
+    if ginie_bet_correct_answer:
+        print("yess")
     return render_template("match_details.html", match_selected=match_selected, ginie_bet_questions=ginie_bet_questions,
                            target_date=target_date, target_time=target_time)
 
@@ -2187,6 +2185,11 @@ def user_details(userid):
         mycur.execute(f"SELECT * FROM ginie_bet.finances_records where user_name = '{user_name}'")
         matches_user = mycur.fetchall()
         conn.commit()
+        if not matches_user:
+            print("not there")
+            mycur.execute(f"SELECT * FROM ginie_bet.check_answer_ginie_bet where user_name = '{user_name}'")
+            matches_user = mycur.fetchall()
+            conn.commit()
         return render_template("user_details.html", user=user, records=records, matches_user=matches_user)
     else:
         return "user not found"
@@ -2449,33 +2452,31 @@ def login():
 #
 
 
-# Function to simulate sending emails
-def send_emails():
-    # Your email sending logic here
-    print("Sending emails...")
-
-
-# Function to update database entries
-def update_database():
-    # Your database update logic here
-    print("Updating database...")
-
-
-# Function to generate reports
-def generate_reports():
-    # Your report generation logic here
-    print("Generating reports...")
-
-
-@app.route('/automate_tasks')
-def automate_tasks():
-    while True:
-        send_emails()
-        update_database()
-        generate_reports()
-        time.sleep(1)  # Add a 1-second delay
-    return 'Tasks automated successfully!'
-
+# id_user = 0
+# # Function to simulate sending emails
+# def creating_users():
+#     global id_user
+#     id_user += 1
+#     fake = Faker()
+#     # Generate random names 5000 times
+#     random_name = fake.name()
+#     print(random_name)
+#     # Set to store generated numbers
+#     random_number = random.randint(1000000000, 9999999999)
+#     # Generate a random 10-digit number
+#     mycur.execute("insert into user_data(user_id, actual_name, user_name, user_number, register_time, last_login,"
+#                   f" balance) values ('{id_user}', "
+#                   f"'{random_name}', '{random_name}({random_number})', '{random_number}', '{formatted_datetime}', "
+#                   f"'{formatted_datetime}', '100')")
+#     conn.commit()
+#
+# def automate_tasks():
+#     for _ in range(5):
+#         creating_users()
+#         time.sleep(.5)  # Add a 1-second delay between iterations
+#     return 'Tasks automated successfully!'
+#
+# automate_tasks()
 
 if __name__ == '__main__':
     app.run(debug=True)

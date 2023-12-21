@@ -6388,7 +6388,7 @@ License: For each use you must have a valid license purchased only from above li
 																			</svg>
 																		</span>
 																		<!--end::Svg Icon-->
-																		<div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="{{user[9]}}" data-kt-countup-prefix="%">0</div>
+																		<div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="{{user[9]}}" data-kt-countup-prefix="₹">0</div>
 																	</div>
 																	<!--end::Number-->
 																	<!--begin::Label-->
@@ -6408,7 +6408,7 @@ License: For each use you must have a valid license purchased only from above li
 																			</svg>
 																		</span>
 																		<!--end::Svg Icon-->
-																		<div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="{{user[10]}}">0</div>
+																		<div class="fs-2 fw-bold" data-kt-countup="true" data-kt-countup-value="{{user[10]}}" data-kt-countup-prefix="₹">0</div>
 																	</div>
 																	<!--end::Number-->
 																	<!--begin::Label-->
@@ -6711,6 +6711,12 @@ License: For each use you must have a valid license purchased only from above li
 																<!--end::Name-->
 																<!--begin::Label-->
 																<span class="badge badge-light-success">Won</span>
+																<!--end::Label-->
+															</div>
+															{% else %}
+															<div class="d-flex flex-stack">
+																<!--begin::Name-->
+																<span class="badge badge-light-warning">Pending</span>
 																<!--end::Label-->
 															</div>
 															{% endif %}
