@@ -1130,11 +1130,8 @@ def match_details(match_id):
     mycur.execute(f'select correct_answer from questions_ginie_bet where match_name = "{match_name}" AND soft_delete != "yes"')
     ginie_bet_correct_answer = mycur.fetchall()
     conn.commit()
-    print(ginie_bet_correct_answer)
-    if ginie_bet_correct_answer:
-        print("yess")
     return render_template("match_details.html", match_selected=match_selected, ginie_bet_questions=ginie_bet_questions,
-                           target_date=target_date, target_time=target_time)
+                           target_date=target_date, target_time=target_time, ginie_bet_correct_answer=ginie_bet_correct_answer)
 
 
 @app.route('/match_correct_answer', methods=['POST', 'GET'])
